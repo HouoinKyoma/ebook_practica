@@ -1,0 +1,66 @@
+{% load static %}
+<div class="header">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css" rel="stylesheet">
+    <script>
+    document.addEventListener("DOMContentLoaded", function () {
+        const searchButton = document.getElementById("search-button");
+        const searchInput = document.getElementById("search-input");
+        const searchForm = document.getElementById("search-form");
+
+        let isInputActive = false;  
+
+        searchButton.addEventListener("click", function (e) {
+            e.stopPropagation();  
+
+            if (!isInputActive) {
+                searchInput.style.width = "300px"; 
+                searchInput.focus();  
+                isInputActive = true;  
+            } else if (searchInput.value.trim() === "") {
+                searchInput.focus();
+            } else {
+                searchForm.submit();
+            }
+        });
+        document.addEventListener("click", function (e) {
+            if (!searchButton.contains(e.target) && !searchInput.contains(e.target)) {
+                if (isInputActive) {
+                    searchInput.style.width = "0";  
+                    isInputActive = false;  
+                }
+            }
+        });
+    })
+    </script>
+    <div class="logo">
+        <a href="{% url 'home' %}">
+            <img src="{% static 'images/logo.png' %}" alt="logo">
+        </a>
+    </div>
+    <div class="right-section-wrapper">
+        <div class="search-box">
+            <form method="get" action="{% url 'home' %}" id="search-form">
+                <div class="input-container">
+                    <button type="button" class="btn-search" id="search-button">
+                        <i class="fas fa-search"></i>
+                    </button>
+                    <input type="text" class="input-search" id="search-input" name="query" placeholder="Введіть для пошуку..." value="{{ request.GET.query|default_if_none:'' }}">
+                </div>
+            </form>
+        </div>
+        <div class="right-section">
+            <nav class="navbar">
+                <a href="{% url 'home' %}" class="navbar-item">Головна</a>
+                {% if user.is_authenticated %}
+                    <form method="post" action="{% url 'logout' %}" class="navbar-item">
+                        {% csrf_token %}
+                        <button type="submit" class="navbar-button">Вихід</button>
+                    </form>
+                {% else %}
+                    <a href="/login" class="navbar-item">Вхід</a>
+                {% endif %}
+                <a href="/favorites_list" class="navbar-item">Улюблені</a>
+            </nav>
+        </div>
+    </div>
+</div>

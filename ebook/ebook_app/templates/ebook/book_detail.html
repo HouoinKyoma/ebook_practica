@@ -1,0 +1,41 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}book-detail{% endblock %}</title>
+        <link href="{% static 'css/styles.css' %}" rel="stylesheet">
+</head>
+{% block header %}
+    {% include 'ebook/block_header.html' %}
+{% endblock %}
+{% block content %}
+<body>
+    <main>
+        <div class="container">
+            <div class="book-detail">
+                <div class="book-left">
+                    <div class="book-image">
+                        <img src="{{ ebook.preview.url }}" alt="{{ ebook.title }}">
+                    </div>
+                    <div class="book-actions">
+                        <form action="{% url 'add_to_favorites' ebook_id=ebook.id %}" method="POST">
+                            {% csrf_token %}
+                            <button type="submit" class="favorite-btn">Додати в улюблені</button>
+                        </form>
+                        <a href="{{ ebook.book_file.url }}" class="download-btn" download="{{ ebook.title }}">Завантажити Книгу</a>
+                    </div>
+                </div>
+                <div class="book-right">
+                    <p><strong>Назва:</strong> {{ ebook.title }}</p>
+                    <p><strong>Автор:</strong> {{ ebook.author }}</p>
+                    <p><strong>Жанри:</strong> {{ ebook.genres }}</p>
+                    <p><strong>Опис:</strong> {{ ebook.description }}</p>
+                </div>
+            </div>
+        </div>
+    </main>
+</body>
+{% endblock %}
+</html>

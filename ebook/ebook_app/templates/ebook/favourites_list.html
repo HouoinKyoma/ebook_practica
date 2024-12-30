@@ -1,0 +1,20 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+{% block header %}
+    {% include 'ebook/block_header.html' %}
+{% endblock %}
+<body>
+    {% for favorite in favorite_ebooks %}
+        <li>
+            <a href="{% url 'ebook_detail' ebook_id=favorite.ebook.id %}">
+                {{ favorite.ebook.title }}
+            </a>
+        </li>
+    {% endfor %}
+</body>
+</html>
