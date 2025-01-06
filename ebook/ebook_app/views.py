@@ -67,6 +67,12 @@ def ebook_search(request):
     return render(request, 'ebook/index.html', {'form': form, 'ebooks': ebooks})
 
 @login_required
+def book_detail(request, id):
+    ebook = get_object_or_404(Ebook, id=id)
+    is_favorite = Favorite.objects.filter(user=request.user, ebook=ebook).exists()
+    return render(request, 'ebook/book_detail.html', {'ebook': ebook, 'is_favorite': is_favorite})
+
+@login_required
 def add_to_favorites(request, ebook_id):
     ebook = get_object_or_404(Ebook, id=ebook_id)
     if request.user.is_authenticated:
@@ -77,7 +83,7 @@ def add_to_favorites(request, ebook_id):
             messages.info(request, 'Эта книга уже в вашем списке избранных!')
     else:
         messages.error(request, 'Пожалуйста, войдите в систему, чтобы добавить книгу в избранное.')
-    return redirect('favorites')
+    return redirect('book_detail', id=ebook_id)
 
 
 @login_required
@@ -85,4 +91,18 @@ def favorite_books(request):
     favorites = Favorite.objects.filter(user=request.user)
     ebooks = [favorite.ebook for favorite in favorites]
     
-    return render(request, 'ebook_app/favorite_books.html', {'ebooks': ebooks})
+    return render(request, 'ebook/favorite_books.html', {'ebooks': ebooks})
+
+@login_required
+def remove_from_favorites(request, ebook_id):
+    ebook = get_object_or_404(Ebook, id=ebook_id)
+    if request.user.is_authenticated:
+        favorite = Favorite.objects.filter(user=request.user, ebook=ebook)
+        if favorite.exists():
+            favorite.delete()
+            messages.success(request, 'Книга удалена из избранного!')
+        else:
+            messages.error(request, 'Эта книга не в вашем списке избранного.')
+    else:
+        messages.error(request, 'Пожалуйста, войдите в систему, чтобы удалить книгу из избранного.')
+    return redirect('book_detail', id=ebook_id)

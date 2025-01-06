@@ -14,7 +14,8 @@ urlpatterns = [
     path('accounts/', include('django.contrib.auth.urls')),
     path('accounts/profile/', lambda request: redirect('home'), name='profile_redirect'),
     path('add_to_favorites/<int:ebook_id>/', views.add_to_favorites, name='add_to_favorites'),
-    path('favorites/', views.favorite_books, name='favourites_list'),
+    path('favorites/', views.favorite_books, name='favorites'),
+    path('remove_from_favorites/<int:ebook_id>/', views.remove_from_favorites, name='remove_from_favorites'),
     path('book_detail/<int:id>/', views.book_detail, name='book_detail'),
     path('search/', views.ebook_search, name='search_ebooks'),
 ] + static( settings.MEDIA_URL, document_root = settings.MEDIA_ROOT)
