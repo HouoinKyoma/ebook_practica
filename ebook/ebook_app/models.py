@@ -33,9 +33,7 @@ class CustomAuthenticationForm(AuthenticationForm):
         model = User
         fields = ['username', 'email', 'password1', 'password2']
 
-from django.contrib.auth.models import User
-from django.db import models
-from ebook_app.models import Ebook
+
 
 class Favorite(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE)
